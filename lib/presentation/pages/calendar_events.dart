@@ -48,8 +48,11 @@ class _CalendarEventsPageState extends State<CalendarEventsPage> {
                   ListView.builder(
                     itemCount: _calendarEvents.length,
                     itemBuilder: (BuildContext context, int index) {
+                      List<Event> _events = List.from(_calendarEvents);
+                      _events.sort((a, b) =>
+                          a.start?.compareTo(b.start as DateTime) ?? 0);
                       return EventItem(
-                          _calendarEvents[index],
+                          _events[index],
                           _deviceCalendarPlugin,
                           _onLoading,
                           _onDeletedFinished,
@@ -129,8 +132,8 @@ class _CalendarEventsPageState extends State<CalendarEventsPage> {
   }
 
   Future _retrieveCalendarEvents() async {
-    final startDate = DateTime.now().add(const Duration(days: -30));
-    final endDate = DateTime.now().add(const Duration(days: 30));
+    final startDate = DateTime.now();
+    final endDate = DateTime.now().add(const Duration(days: 7));
     var calendarEventsResult = await _deviceCalendarPlugin.retrieveEvents(
         _calendar.id,
         RetrieveEventsParams(startDate: startDate, endDate: endDate));
